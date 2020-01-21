@@ -339,7 +339,7 @@
             <id>adobe-public</id>
 
             <activation>
-                <activeByDefault>${SDPROFILE}</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
 
             <properties>
