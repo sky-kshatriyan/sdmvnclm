@@ -16,8 +16,8 @@ node {
     }
   }
   stage('Build') {
-    withMaven(jdk: 'JDK8u121', maven: 'M3', mavenSettingsConfig: 'nexus-settings') {
-      sh 'mvn clean install'
+    withMaven(jdk: 'JDK8u161', maven: 'M3', mavenSettingsConfig: 'nexus-settings') {
+      bat 'mvn clean install'
     }
   }
 }
