@@ -18,8 +18,8 @@ node {
                                                                     Uri  =  "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}"
                                                                     Method = 'POST'
                                                                     ContentType = 'application/json'
-                                                                    Headers = @{Authorization=('Basic {0}' -f $SDToken)}
-                                                                    Body = ${payload}
+                                                                    Headers = "@{Authorization=('Basic {0}' -f $SDToken)}"
+                                                                    Body = "${payload}"
                                                                   }
                                                                   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
                                                                   IWR @SDIRMParams
