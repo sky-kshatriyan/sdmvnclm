@@ -19,7 +19,7 @@ node {
                                                                     Method = 'POST'
                                                                     ContentType = 'application/json'
                                                                     Headers = @{Authorization=('Basic {0}' -f $SDToken)}
-                                                                    Body = "${payload}"
+                                                                    Body = ${payload}
                                                                   }
                                                                   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
                                                                   IWR @SDIRMParams
