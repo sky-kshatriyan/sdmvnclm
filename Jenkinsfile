@@ -12,15 +12,18 @@ node {
             target_url: targetUrl
     )
     
-    powershell label: 'RepoStatus', returnStdout: true, script: '''$SDIRMParams   = @{
-                                                                                        Uri  =  "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}"
-                                                                                        Method = "POST"
-                                                                                        ContentType = \'application/json\'
-                                                                                        Headers = @{Authorization=(\'Basic {0}\' -f "sky-kshatriyan:$gitHubApiToken")}
-                                                                                        Body = "$payload"
-                                                                                      }
-                                                                                      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-                                                                                      Invoke-RestMethod @SDIRMParams | Out-Null'''
+    powershell label: 'RepoStatus', returnStdout: true, script: '''
+                                                                  $SDToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sky-kshatriyan:$gitHubApiToken"))
+                                                                  $SDIRMParams   = @{
+                                                                    Uri  =  "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}"
+                                                                    Method = "POST"
+                                                                    ContentType = \'application/json\'
+                                                                    Headers = @{Authorization=(\'Basic {0}\' -f "$SDToken")}
+                                                                    Body = "$payload"
+                                                                  }
+                                                                  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+                                                                  Invoke-RestMethod @SDIRMParams | Out-Null
+                                                                '''
 
   }
 
