@@ -12,8 +12,8 @@ node {
             target_url: targetUrl
     )
     
-    powershell label: 'RepoStatus', script: Invoke-RestMethod -Uri "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}" -Method POST -ContentType "application/json" -Body "${payload}" -Headers @{Authorization=("Basic {0}" -f $gitHubApiToken)}
-    
+    powershell label: 'RepoStatus', script: 'Invoke-RestMethod -Uri "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}" -Method POST -ContentType "application/json" -Body "${payload}" -Headers @{Authorization=("Basic {0}" -f $gitHubApiToken)} | Out-Null'
+
   }
 
   stage('Preparation') {
