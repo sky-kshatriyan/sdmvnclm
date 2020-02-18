@@ -22,7 +22,10 @@ Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/stat
     checkout scm
     commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
     
-    postGitHub 'pending', 'build', 'Build is running'
+    // postGitHub 'pending', 'build', 'Build is running'
+    powershell script: '''
+      $ENV:commitId
+    '''
     
     
     pom = readMavenPom file: 'pom.xml'
