@@ -1,7 +1,7 @@
 import groovy.json.JsonOutput
 
 node {
-  def pom, version
+  def commitId, commitDate, pom, version
   def gitHubApiToken
 
   def postGitHub = { state, context, description, targetUrl = null ->
@@ -20,7 +20,8 @@ node {
     deleteDir()
 
     checkout scm
-
+    commitId = 
+    commitDate = powershell label: 'RepoCommitDate', returnStdout: true, script: '(git show -s --format=%cd --date=format:%Y%m%d%H-%M%S ${commitId}).trim()'
     pom = readMavenPom file: 'pom.xml'
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'GitLab_Pass',
