@@ -22,7 +22,8 @@ node {
                                                                     Body        = ${payload}
                                                                   }
                                                                   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-                                                                  IWR @SDIRMParams
+                                                                  Write-Host $sdUri
+                                                                  # IWR @SDIRMParams
                                                                 '''
 
   }
