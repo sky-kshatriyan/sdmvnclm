@@ -12,7 +12,7 @@ node {
             target_url: targetUrl
     )
     
-    powershell label: 'RepoStatus', script: 'Invoke-RestMethod -Uri "http://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}" -Method POST -ContentType "application/json" -Body "${payload}" -Headers @{Authorization=("Basic {0}" -f $gitHubApiToken)} | Out-Null'
+    powershell label: 'RepoStatus', script: Invoke-RestMethod -Uri "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}" -Method POST -ContentType "application/json" -Body "${payload}" -Headers @{Authorization=("Basic {0}" -f $gitHubApiToken)} | Out-Null
 
   }
 
@@ -20,7 +20,7 @@ node {
     deleteDir()
 
     checkout scm
-    commitId = 
+    commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '(git rev-parse HEAD).trim()'
     commitDate = powershell label: 'RepoCommitDate', returnStdout: true, script: '(git show -s --format=%cd --date=format:%Y%m%d%H-%M%S ${commitId}).trim()'
     pom = readMavenPom file: 'pom.xml'
 
