@@ -12,7 +12,7 @@ node {
             target_url: targetUrl
     )
     powershell label: 'RepoStatus', returnStdout: true, script: '''[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12                                                                  
-Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId -Method \'POST\' -ContentType \'application/json\' -Headers @{Authorization=(\'Basic {0}\' -f $SDToken)} -Body $payload'''
+Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$env:commitId -Method \'POST\' -ContentType \'application/json\' -Headers @{Authorization=(\'Basic {0}\' -f $env:SDToken)} -Body $env:payload'''
 
   }
 
@@ -21,10 +21,10 @@ Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/stat
 
     checkout scm
     commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
-    sdUri = "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId"
+    
     postGitHub 'pending', 'build', 'Build is running'
     
-    commitDate = powershell label: 'RepoCommitDate', returnStdout: true, script: '''(git show -s --format=%cd --date=format:%Y%m%d%H-%M%S ${commitId}).trim()'''
+    
     pom = readMavenPom file: 'pom.xml'
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'GitLab_Pass',
