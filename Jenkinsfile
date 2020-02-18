@@ -21,10 +21,10 @@ Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/stat
 
     checkout scm
     commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
-    
+    sdUri = 'shashi'
     
     powershell script: '''
-      '\$commitId'
+      '$sdUri'
     '''
     
     
