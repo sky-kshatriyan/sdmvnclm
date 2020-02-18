@@ -15,11 +15,11 @@ node {
     powershell label: 'RepoStatus', returnStdout: true, script: '''
                                                                   $SDToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sky-kshatriyan:$gitHubApiToken"))
                                                                   $SDIRMParams  = @{
-                                                                    Uri  =  "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}"
-                                                                    Method = 'POST'
+                                                                    Uri         =  "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}"
+                                                                    Method      = 'POST'
                                                                     ContentType = 'application/json'
-                                                                    Headers = @{Authorization=('Basic {0}' -f $SDToken)}
-                                                                    Body = ${payload}
+                                                                    Headers     = @{Authorization=('Basic {0}' -f $SDToken)}
+                                                                    Body        = ${payload}
                                                                   }
                                                                   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
                                                                   IWR @SDIRMParams
@@ -32,6 +32,7 @@ node {
 
     checkout scm
     commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
+    echo '${commitId}'
     commitDate = powershell label: 'RepoCommitDate', returnStdout: true, script: '''(git show -s --format=%cd --date=format:%Y%m%d%H-%M%S ${commitId}).trim()'''
     pom = readMavenPom file: 'pom.xml'
 
