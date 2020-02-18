@@ -24,7 +24,7 @@ Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/stat
     sdUri = 'shashi'
     
     powershell script: '''
-      \$env:sdUri
+      echo $sdUri
     '''
     
     
