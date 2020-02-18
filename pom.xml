@@ -129,7 +129,7 @@
                     <downloadSources>true</downloadSources>
                 </configuration>
             </plugin>
-            <plugin>
+<!--             <plugin>
                 <groupId>org.sonatype.ossindex.maven</groupId>
                 <artifactId>ossindex-maven-plugin</artifactId>
                 <version>3.1.0</version>
@@ -143,15 +143,15 @@
                     </execution>
                 </executions>
                 </plugin>            
-        </plugins>
+        </plugins> -->
         <pluginManagement>
             <plugins>
                 <!-- OSS INDEX Plugin -->
-                <plugin>
+                <!-- <plugin>
                     <groupId>org.sonatype.ossindex.maven</groupId>
                     <artifactId>ossindex-maven-plugin</artifactId>
                     <version>3.1.0</version>
-                </plugin>
+                </plugin> -->
                 <!-- Maven Clean Plugin -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
