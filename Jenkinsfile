@@ -11,20 +11,7 @@ node {
             description: description,
             target_url: targetUrl
     )
-    echo payload
-    powershell label: 'RepoStatus', returnStdout: true, script: '''
-                                                                  $SDToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sky-kshatriyan:$gitHubApiToken"))
-                                                                  $SDIRMParams  = @{
-                                                                    Uri         =  "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId"
-                                                                    Method      = 'POST'
-                                                                    ContentType = 'application/json'
-                                                                    Headers     = @{Authorization=('Basic {0}' -f $SDToken)}
-                                                                    Body        = "$payload"
-                                                                  }
-                                                                  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-                                                                  Write-Host $sdUri
-                                                                  IWR @SDIRMParams
-                                                                '''
+    powershell label: 'RepoStatus', returnStdout: true, script: '''Invoke-RestMethod -Uri 'https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId' -Method 'POST' -ContentType 'application/json' -Headers @{Authorization=('Basic {0}' -f '$SDToken')} -Body '$payload' '''
 
   }
 
