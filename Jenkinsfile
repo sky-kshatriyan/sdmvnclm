@@ -33,6 +33,7 @@ node {
     checkout scm
     commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
     sdUri = "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId"
+    postGitHub 'pending', 'build', 'Build is running'
     echo payload
     commitDate = powershell label: 'RepoCommitDate', returnStdout: true, script: '''(git show -s --format=%cd --date=format:%Y%m%d%H-%M%S ${commitId}).trim()'''
     pom = readMavenPom file: 'pom.xml'
