@@ -1,7 +1,7 @@
 import groovy.json.JsonOutput
 
 node {
-  def commitId, commitDate, pom, version
+  def commitId, commitDate, pom, version, sdUri
   def gitHubApiToken
 
   def postGitHub = { state, context, description, targetUrl = null ->
@@ -32,7 +32,8 @@ node {
 
     checkout scm
     commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
-    echo commitId
+    sdUri = "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/commitId"
+    echo sdUri
     commitDate = powershell label: 'RepoCommitDate', returnStdout: true, script: '''(git show -s --format=%cd --date=format:%Y%m%d%H-%M%S ${commitId}).trim()'''
     pom = readMavenPom file: 'pom.xml'
 
@@ -41,16 +42,16 @@ node {
       gitHubApiToken = env.GITHUB_API_PASSWORD
     }
   }
-  stage('Build') {
-    postGitHub 'pending', 'build', 'Build is running'
-    withMaven(jdk: 'JDK8u161', maven: 'M3', mavenSettingsConfig: 'nexus-settings') {
-      bat 'mvn clean'
-    }
-    if (currentBuild.result == 'FAILURE') {
-      postGitHub 'failure', 'build', 'Build failed'
-      return
-    } else {
-      postGitHub 'success', 'build', 'Build succeeded'
-    }    
-  }    
+  // stage('Build') {
+  //   postGitHub 'pending', 'build', 'Build is running'
+  //   withMaven(jdk: 'JDK8u161', maven: 'M3', mavenSettingsConfig: 'nexus-settings') {
+  //     bat 'mvn clean'
+  //   }
+  //   if (currentBuild.result == 'FAILURE') {
+  //     postGitHub 'failure', 'build', 'Build failed'
+  //     return
+  //   } else {
+  //     postGitHub 'success', 'build', 'Build succeeded'
+  //   }    
+  // }
 }
