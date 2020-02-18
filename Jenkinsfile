@@ -19,6 +19,7 @@ node {
                                                                                         Headers = @{Authorization=(\'Basic {0}\' -f "sky-kshatriyan:$gitHubApiToken")}
                                                                                         Body = "$payload"
                                                                                       }
+                                                                                      [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
                                                                                       Invoke-RestMethod @SDIRMParams | Out-Null'''
 
   }
