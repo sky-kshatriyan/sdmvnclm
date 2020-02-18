@@ -24,7 +24,7 @@ Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/stat
     
     
     powershell script: '''
-      echo \$commitId
+      '$commitId'
     '''
     
     
