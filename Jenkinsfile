@@ -19,7 +19,7 @@ node {
                                                                     Method = 'POST'
                                                                     ContentType = 'application/json'
                                                                     Headers = @{Authorization=('Basic {0}' -f $SDToken)}
-                                                                    Body = (@{ state = "success"; context = "build"; description = "done"; target_url = $null} | ConvertTo-Json)
+                                                                    Body = ${payload}
                                                                   }
                                                                   IWR @SDIRMParams
                                                                 '''
