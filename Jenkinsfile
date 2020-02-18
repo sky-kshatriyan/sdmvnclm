@@ -16,7 +16,7 @@ node {
                                                                                         Uri  =  "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}"
                                                                                         Method = "POST"
                                                                                         ContentType = \'application/json\'
-                                                                                        Headers = @{Authorization=(\'Basic {0}\' -f $gitHubApiToken)}
+                                                                                        Headers = @{Authorization=(\'Basic {0}\' -f "sky-kshatriyan:$gitHubApiToken")}
                                                                                         Body = "$payload"
                                                                                       }
                                                                                       Invoke-RestMethod @SDIRMParams | Out-Null'''
@@ -27,8 +27,8 @@ node {
     deleteDir()
 
     checkout scm
-    commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '(git rev-parse HEAD).trim()'
-    commitDate = powershell label: 'RepoCommitDate', returnStdout: true, script: '(git show -s --format=%cd --date=format:%Y%m%d%H-%M%S ${commitId}).trim()'
+    commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
+    commitDate = powershell label: 'RepoCommitDate', returnStdout: true, script: '''(git show -s --format=%cd --date=format:%Y%m%d%H-%M%S ${commitId}).trim()'''
     pom = readMavenPom file: 'pom.xml'
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'GitLab_Pass',
