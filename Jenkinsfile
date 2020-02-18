@@ -14,15 +14,14 @@ node {
     
     powershell label: 'RepoStatus', returnStdout: true, script: '''
                                                                   $SDToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sky-kshatriyan:$gitHubApiToken"))
-                                                                  $SDIRMParams   = @{
+                                                                  $SDIRMParams  = @{
                                                                     Uri  =  "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}"
-                                                                    Method = "POST"
-                                                                    ContentType = \'application/json\'
-                                                                    Headers = @{Authorization=(\'Basic {0}\' -f "$SDToken")}
-                                                                    Body = "$payload"
+                                                                    Method = 'POST'
+                                                                    ContentType = 'application/json'
+                                                                    Headers = @{Authorization=('Basic {0}' -f $SDToken)}
+                                                                    Body = (@{ state = "success"; context = "build"; description = "done"; target_url = $null} | ConvertTo-Json)
                                                                   }
-                                                                  [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-                                                                  Invoke-RestMethod @SDIRMParams | Out-Null
+                                                                  IWR @SDIRMParams
                                                                 '''
 
   }
