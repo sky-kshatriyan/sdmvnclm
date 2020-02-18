@@ -41,8 +41,9 @@ node {
     }
   }
   stage('Build') {
+    postGitHub 'pending', 'build', 'Build is running'
     withMaven(jdk: 'JDK8u161', maven: 'M3', mavenSettingsConfig: 'nexus-settings') {
-      // bat 'mvn clean install'
+      bat 'mvn clean'
     }
     if (currentBuild.result == 'FAILURE') {
       postGitHub 'failure', 'build', 'Build failed'
