@@ -11,8 +11,8 @@ node {
             description: description,
             target_url: targetUrl
     )
-    powershell label: 'RepoStatus', returnStdout: true, script: '''[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 
-Invoke-RestMethod -Uri \'https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId\' -Method \'POST\' -ContentType \'application/json\' -Headers @{Authorization=(\'Basic {0}\' -f \'$SDToken\')} -Body \'$payload\''''
+    powershell label: 'RepoStatus', returnStdout: true, script: '''[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12                                                                  
+Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId -Method \'POST\' -ContentType \'application/json\' -Headers @{Authorization=(\'Basic {0}\' -f $SDToken)} -Body $payload'''
 
   }
 
