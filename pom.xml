@@ -129,7 +129,7 @@
                     <downloadSources>true</downloadSources>
                 </configuration>
             </plugin>
-<!--             <plugin>
+            <!-- <plugin>
                 <groupId>org.sonatype.ossindex.maven</groupId>
                 <artifactId>ossindex-maven-plugin</artifactId>
                 <version>3.1.0</version>
@@ -142,8 +142,8 @@
                     </goals>
                     </execution>
                 </executions>
-                </plugin>            
-        </plugins> -->
+                </plugin> -->            
+        </plugins>
         <pluginManagement>
             <plugins>
                 <!-- OSS INDEX Plugin -->
