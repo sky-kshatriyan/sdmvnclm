@@ -13,7 +13,7 @@ node {
     )
     
     powershell label: 'RepoStatus', returnStdout: true, script: """
-		echo "$payload"
+		echo $payload
 	"""
 
   }
