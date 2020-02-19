@@ -11,7 +11,7 @@ node {
             description: description,
             target_url: targetUrl
     )
-    powershell label: 'RepoStatus', returnStdout: true, script: ''' $payload'''
+    powershell label: 'RepoStatus', returnStdout: true, script: ''' "echo $payload" '''
     
  //    powershell label: 'RepoStatus', returnStdout: true, script: '''
  //    	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
