@@ -25,13 +25,15 @@ node {
 
     deleteDir()
     checkout scm
-    commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
-    sdUri = 'shashi'
-    postGitHub 'pending', 'build', 'Build is running'  
-    powershell label: 'testing vars', script: '''
-      echo "\$sdUri"
-    '''
-    pom = readMavenPom file: 'pom.xml'
+    // commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
+    // sdUri = 'shashi'
+    // postGitHub 'pending', 'build', 'Build is running'  
+    // powershell label: 'testing vars', script: '''
+    //   echo "\$sdUri"
+    // '''
+    // pom = readMavenPom file: 'pom.xml'
+
+    powershell(returnStdout: true, script: 'Write-Output "PowerShell is mighty!"')
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'GitLab_Pass',
                       usernameVariable: 'GITHUB_API_USERNAME', passwordVariable: 'GITHUB_API_PASSWORD']]) {
