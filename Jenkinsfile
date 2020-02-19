@@ -48,10 +48,12 @@ def getRepoSlug() {
 void setGitHubStatus(state, targetUrl, description) {
     withCredentials([usernamePassword(credentialsId: 'GitLab_Pass', passwordVariable: 'GITHUB_API_PASSWORD', usernameVariable: 'GITHUB_API_USERNAME')]) {
     	def commitId = powershell(returnStdout: true, script: "git rev-parse HEAD").trim()
-      def payload = powershell(returnStdout:true, script: "@{state = ${state}; target_url = ${targetUrl}; description = ${description}} | ConvertTo-Json")
+      def payload = JsonOutput.toJson(["state": "${state}", "target_url": "${targetUrl}", "description": "${description}"])
       def apiUrl = "https://api.github.com/repos/${getRepoSlug()}/statuses/${commitId}"
-      // def sdToken = powershell(returnStdout:true, script: "[System.Convert]::ToBase64String([System.Text.Encoding]::Ascii.GetBytes(${ENV:GITHUB_API_USERNAME}:${ENV:GITHUB_API_PASSWORD}))")
-      def response = powershell(returnStdout: true, script: "Invoke-WebRequest -Uri ${apiUrl} -Headers @{'Authorization'='Basic c2t5LWtzaGF0cml5YW46U2FyYWgxNDMq'} -ContentType 'application/json' -Method 'POST' -Body ${payload}").trim()
+      String apiUN = env.GITHUB_API_USERNAME
+      String apiPW = env.GITHUB_API_PASSWORD
+      def sdToken = powershell(returnStdout:true, script: "[System.Convert]::ToBase64String([System.Text.Encoding]::Ascii.GetBytes(${apiUN}:${apiPW}))")
+      def response = powershell(returnStdout: true, script: "Invoke-WebRequest -Uri ${apiUrl} -Headers @{'Authorization'='Basic ${sdToken}'} -ContentType 'application/json' -Method 'POST' -Body ${payload}").trim()
     }
 }
 
