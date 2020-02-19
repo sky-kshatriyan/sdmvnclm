@@ -11,7 +11,8 @@ node {
             description: description,
             target_url: targetUrl
     )
-    echo payload
+    powershell label: 'RepoStatus', returnStdout: true, script: ''' $payload'''
+    
  //    powershell label: 'RepoStatus', returnStdout: true, script: '''
  //    	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
  //    	$SDToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sky-kshatriyan:$gitHubApiToken"))
