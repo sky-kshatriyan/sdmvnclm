@@ -6,17 +6,14 @@ node {
 
   def postGitHub = { state, context, description, targetUrl = null ->
     def payload = JsonOutput.toJson(
-            state: state;
-            context: context;
-            description: description;
+            state: state,
+            context: context,
+            description: description,
             target_url: targetUrl
     )
     
     powershell label: 'RepoStatus', returnStdout: true, script: """
-    	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    	$sdToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sky-kshatriyan:$gitHubApiToken"))
-    	write-Host "$sdToken"
-		IRM -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId -Method POST -ContentType application/json -Headers @{Authorization=(Basic {0} -f $sdToken)} -Body $payload
+		write-Host $payload
 	"""
 
   }
