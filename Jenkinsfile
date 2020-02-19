@@ -29,7 +29,7 @@ node {
     sdUri = 'shashi'
     postGitHub 'pending', 'build', 'Build is running'  
     powershell script: '''
-      echo '\$sdUri'
+      echo "$sdUri"
     '''
     pom = readMavenPom file: 'pom.xml'
 
