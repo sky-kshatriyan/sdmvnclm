@@ -28,7 +28,7 @@ node {
     commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
     sdUri = 'shashi'
     postGitHub 'pending', 'build', 'Build is running'  
-    powershell script: '''
+    powershell label: 'testing vars' script: '''
       echo "\$sdUri"
     '''
     pom = readMavenPom file: 'pom.xml'
