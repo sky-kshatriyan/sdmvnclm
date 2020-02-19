@@ -6,9 +6,9 @@ node {
 
   def postGitHub = { state, context, description, targetUrl = null ->
     def payload = JsonOutput.toJson(
-            state: state,
-            context: context,
-            description: description,
+            state: state;
+            context: context;
+            description: description;
             target_url: targetUrl
     )
     
