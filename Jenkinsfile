@@ -11,7 +11,8 @@ node {
             description: description,
             target_url: targetUrl
     )
-    powershell label: 'RepoStatus', returnStdout: true, script: ''' "echo $payload" '''
+    
+    powershell label: 'RepoStatus', returnStdout: true, script: ''' echo "$payload" '''
     
  //    powershell label: 'RepoStatus', returnStdout: true, script: '''
  //    	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -26,14 +27,14 @@ node {
     deleteDir()
     checkout scm
     // commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
-    // sdUri = 'shashi'
+    sdUri = 'shashi'
     // postGitHub 'pending', 'build', 'Build is running'  
     // powershell label: 'testing vars', script: '''
     //   echo "\$sdUri"
     // '''
     // pom = readMavenPom file: 'pom.xml'
 
-    powershell(returnStdout: true, script: 'Write-Output "PowerShell is mighty!"')
+    powershell(returnStdout: true, script: 'Write-Output "$sdUri"')
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'GitLab_Pass',
                       usernameVariable: 'GITHUB_API_USERNAME', passwordVariable: 'GITHUB_API_PASSWORD']]) {
