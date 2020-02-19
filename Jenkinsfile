@@ -1,7 +1,7 @@
 import groovy.json.JsonOutput
 
 node {
-  def commitId, commitDate, pom, version, sdToken
+  def commitId, commitDate, pom, version, sdToken, sdIRMParams
   def gitHubApiToken
 
   def postGitHub = { state, context, description, targetUrl = null ->
@@ -13,7 +13,15 @@ node {
     )
     
     powershell label: 'RepoStatus', returnStdout: true, script: """
-		echo $payload
+		$sdToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sky-kshatriyan:$gitHubApiToken"))
+		$sdIRMParams 	=	@{
+			Uri	           =   "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId"
+			Method         =   'POST'
+			ContentType    =   'application/json'
+			Headers        =   @{Authorization=("Basic {0}" -f $sdToken)}
+			Body           =   (@{ state = "success"; context = "build"; description = "Build succeeded"; target_url = $null} | ConvertTo-Json)
+		}
+		IWR @sdIRMParams		
 	"""
 
   }
