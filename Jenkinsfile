@@ -1,4 +1,5 @@
 import groovy.json.JsonOutput
+import com.sonatype.jenkins.pipeline.GitHub
 
 
 node {
