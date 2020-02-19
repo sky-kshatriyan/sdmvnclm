@@ -1,9 +1,4 @@
 import groovy.json.JsonOutput
-
-node {
-  def commitId, commitDate, pom, version
-  def gitHubApiToken
-
 void postGitHub(state, context, description, targetUrl) {
     withCredentials([[$class: 'StringBinding', credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN']]) {
         def payload = JsonOutput.toJson(["state": "${state}", "context": "${context}", "description": "${description}", "target_url": "${targetUrl}"])
@@ -12,35 +7,9 @@ void postGitHub(state, context, description, targetUrl) {
     }
 }
 
-
- //  def postGitHub = { state, context, description, targetUrl = null ->
- //    def payload = JsonOutput.toJson(
- //            state: state,
- //            context: context,
- //            description: description,
- //            target_url: targetUrl
- //    )
-    
- //    powershell label: 'RepoStatus', returnStdout: true, script: """
-	// 	$sdToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sky-kshatriyan:$gitHubApiToken"))
-	// 	$sdIRMParams 	=	@{
-	// 		Uri	           =   "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId"
-	// 		Method         =   'POST'
-	// 		ContentType    =   'application/json'
-	// 		Headers        =   @{Authorization=("Basic $sdToken")}
-	// 		Body           =   (@{ state = "success"; context = "build"; description = "Build succeeded"; target_url = ""} | ConvertTo-Json)
-	// 	}
-	// 	IWR @sdIRMParams		
-	// """
-
- //  }
-
-
-
-
-
-
-
+node {
+  def commitId, commitDate, pom, version
+  def gitHubApiToken
 
   stage('Preparation') {
 
