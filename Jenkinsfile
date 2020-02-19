@@ -11,23 +11,24 @@ node {
             description: description,
             target_url: targetUrl
     )
-    powershell label: 'RepoStatus', returnStdout: true, script: '''[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12                                                                  
-Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$env:commitId -Method \'POST\' -ContentType \'application/json\' -Headers @{Authorization=(\'Basic {0}\' -f $env:SDToken)} -Body $env:payload'''
+    echo '$payload'
+    powershell label: 'RepoStatus', returnStdout: true, script: '''
+    	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12                                                                  
+		Invoke-RestMethod -Uri \'https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/\$commitId\' -Method \'POST\' -ContentType \'application/json\' -Headers @{Authorization=(\'Basic {0}\' -f '\$SDToken')} -Body '\$payload'
+	'''
 
   }
 
   stage('Preparation') {
-    deleteDir()
 
+    deleteDir()
     checkout scm
     commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
     sdUri = 'shashi'
-    
+    postGitHub 'pending', 'build', 'Build is running'  
     powershell script: '''
-      echo $sdUri
+      echo '\$sdUri'
     '''
-    
-    
     pom = readMavenPom file: 'pom.xml'
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'GitLab_Pass',
@@ -35,6 +36,7 @@ Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/stat
       gitHubApiToken = env.GITHUB_API_PASSWORD
     }
   }
+
   // stage('Build') {
   //   postGitHub 'pending', 'build', 'Build is running'
   //   withMaven(jdk: 'JDK8u161', maven: 'M3', mavenSettingsConfig: 'nexus-settings') {
