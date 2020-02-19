@@ -30,7 +30,7 @@ node {
     checkout scm
     // commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
     sdUri = 'shashi'
-    // postGitHub 'pending', 'build', 'Build is running'  
+    postGitHub 'pending', 'build', 'Build is running'  
     // powershell label: 'testing vars', script: '''
     //   echo "\$sdUri"
     // '''
