@@ -1,36 +1,78 @@
 import groovy.json.JsonOutput
-void postGitHub(state, context, description, targetUrl) {
+
+
+node {
+  sdPreperation()
+  sdBuild()
+  // sdNexusLifeCycleCheck()
+  // sdDeploy()
+}
+
+def sdPreperation () {
+	stage 'Prepare the Build'
+	context="Preparing to Build"
+	checkout scm
+	setBuildStatus ("${context}", 'Checkout Completed', 'Success')
+}
+
+def sdBuild () {
+	stage 'Build'
+	mvn 'clean install -DskipTests=true -Dmaven.javadoc.skip=true -Dcheckstyle.skip=true -B -V'
+}
+
+def mvn(args) {
+    withMaven(
+        jdk: 'JDK8u161', 
+        maven: 'M3', 
+        mavenSettingsConfig: 'nexus-settings'
+        ) {
+    	setBuildStatus ('Build', 'Building Project', 'Starting')
+        bat "mvn $args -Dmaven.test.failure.ignore"
+        if (currentBuild.result == 'FAILURE') {
+	      setDeploymentStatus ('failure', 'Build', 'Build failed')
+	      return
+	    } else {
+	      setDeploymentStatus ('success', 'Build', 'Build Successful')
+	    }
+	    setBuildStatus ('Build', 'Building Project', 'Completed')
+    }
+}
+
+def getRepoSlug() {
+    tokens = "${env.JOB_NAME}".tokenize('/')
+    org = tokens[tokens.size()-3]
+    repo = tokens[tokens.size()-2]
+    return "${org}/${repo}"
+}
+
+def createDeployment(ref, environment, description) {
     withCredentials([[$class: 'StringBinding', credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN']]) {
-        def payload = JsonOutput.toJson(["state": "${state}", "context": "${context}", "description": "${description}", "target_url": "${targetUrl}"])
-        def apiUrl = "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/${commitId}"
+    	def commitId = powershell(returnStdout: true, script: "git rev-parse HEAD").trim()
+        def payload = JsonOutput.toJson(["ref": "${ref}", "description": "${description}", "environment": "${environment}", "required_contexts": []])
+        def apiUrl = "https://api.github.com/repos/${getRepoSlug()}/${commitId}"
+        def response = powershell(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.GITHUB_TOKEN}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
+        def jsonSlurper = new JsonSlurper()
+        def data = jsonSlurper.parseText("${response}")
+        return data.id
+    }
+}
+
+void setDeploymentStatus(state, targetUrl, description) {
+    withCredentials([[$class: 'StringBinding', credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN']]) {
+    	def commitId = powershell(returnStdout: true, script: "git rev-parse HEAD").trim()
+        def payload = JsonOutput.toJson(["state": "${state}", "target_url": "${targetUrl}", "description": "${description}"])
+        def apiUrl = "https://api.github.com/repos/${getRepoSlug()}/statuses/${commitId}"
         def response = powershell(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.GITHUB_TOKEN}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
     }
 }
 
-node {
-  def commitId, commitDate, pom, version
-  def gitHubApiToken
-
-  stage('Preparation') {
-
-    deleteDir()
-    checkout scm
-
-    commitId = powershell label: 'RepoCommitID', returnStdout: true, script: '''(git rev-parse HEAD).trim()'''
-    pom = readMavenPom file: 'pom.xml'
-
-  }
-
-  stage('Build') {
-    postGitHub 'pending', 'build', 'Build is running'
-    withMaven(jdk: 'JDK8u161', maven: 'M3', mavenSettingsConfig: 'nexus-settings') {
-      bat 'mvn clean'
-    }
-    if (currentBuild.result == 'FAILURE') {
-      postGitHub 'failure', 'build', 'Build failed'
-      return
-    } else {
-      postGitHub 'success', 'build', 'Build succeeded'
-    }    
-  }
+void setBuildStatus(context, message, state) {
+  // partially hard coded URL because of https://issues.jenkins-ci.org/browse/JENKINS-36961, adjust to your own GitHub instance
+  step([
+      $class: "GitHubCommitStatusSetter",
+      contextSource: [$class: "ManuallyEnteredCommitContextSource", context: context],
+      reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://api.github.com/repos/${getRepoSlug()}"],
+      errorHandlers: [[$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]],
+      statusResultSource: [ $class: "ConditionalStatusResultSource", results: [[$class: "AnyBuildResult", message: message, state: state]] ]
+  ]);
 }
