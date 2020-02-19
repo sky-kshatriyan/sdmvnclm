@@ -51,7 +51,7 @@ void setGitHubStatus(state, targetUrl, description) {
       def payload = JsonOutput.toJson(["state": "${state}", "target_url": "${targetUrl}", "description": "${description}"])
       def apiUrl = "https://api.github.com/repos/${getRepoSlug()}/statuses/${commitId}"
       def sdToken = powershell(returnStdout:true, script: "[System.Convert]::ToBase64String([System.Text.Encoding]::Ascii.GetBytes(${GITHUB_API_USERNAME}:${GITHUB_API_PASSWORD}))")
-      def response = powershell(returnStdout: true, script: "Invoke-Webrequest -URI ${apiUrl} -Headers @{"Authorization"="Basic ${sdToken}"} -ContentType 'application/json' -Method 'POST' -Body ${payload} ").trim()
+      def response = powershell(returnStdout: true, script: "Invoke-Webrequest -URI ${apiUrl} -Headers @{"Authorization"=(Basic ${sdToken})} -ContentType 'application/json' -Method 'POST' -Body ${payload} ").trim()
     }
 }
 
