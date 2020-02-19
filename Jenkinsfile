@@ -15,8 +15,8 @@ node {
     powershell label: 'RepoStatus', returnStdout: true, script: """
     	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     	$sdToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sky-kshatriyan:$gitHubApiToken"))
-    	write-Host $sdToken
-		# Invoke-RestMethod -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId -Method \'POST\' -ContentType \'application/json\' -Headers @{Authorization=(Basic {0} -f $sdToken)} -Body $payload
+    	write-Host "$sdToken"
+		IRM -Uri https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId -Method POST -ContentType application/json -Headers @{Authorization=(Basic {0} -f $sdToken)} -Body $payload
 	"""
 
   }
