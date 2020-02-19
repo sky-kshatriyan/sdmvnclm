@@ -46,11 +46,11 @@ def getRepoSlug() {
 }
 
 void setGitHubStatus(state, targetUrl, description) {
-    withCredentials([[$class: 'StringBinding', credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN']]) {
+    withCredentials([[$class: 'StringBinding', credentialsId: 'GitHub_Token', variable: 'GitHub_Token']]) {
     	def commitId = powershell(returnStdout: true, script: "git rev-parse HEAD").trim()
         def payload = JsonOutput.toJson(["state": "${state}", "target_url": "${targetUrl}", "description": "${description}"])
         def apiUrl = "https://api.github.com/repos/${getRepoSlug()}/statuses/${commitId}"
-        def response = powershell(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.GITHUB_TOKEN}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
+        def response = powershell(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.GitHub_Token}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
     }
 }
 
