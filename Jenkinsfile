@@ -29,10 +29,10 @@ def mvn(args) {
     	setBuildStatus ('Build', 'Building Project', 'Starting')
         bat "mvn $args -Dmaven.test.failure.ignore"
         if (currentBuild.result == 'FAILURE') {
-	      setGitHubStatus ('failure', 'Build', 'Build failed')
+	      setGitHubStatus ('failure', 'https://api.github.com/repos/sky-kshatriyan/sdmvnclm', 'Build failed')
 	      return
 	    } else {
-	      setGitHubStatus ('success', 'Build', 'Build Successful')
+	      setGitHubStatus ('success', 'https://api.github.com/repos/sky-kshatriyan/sdmvnclm', 'Build Successful')
 	    }
 	    setBuildStatus ('Build', 'Building Project', 'Completed')
     }
@@ -46,11 +46,12 @@ def getRepoSlug() {
 }
 
 void setGitHubStatus(state, targetUrl, description) {
-    withCredentials([[$class: 'StringBinding', credentialsId: 'GitHub_Token', variable: 'GitHub_Token']]) {
+    withCredentials([usernamePassword(credentialsId: 'GitLab_Pass', passwordVariable: 'GITHUB_API_PASSWORD', usernameVariable: 'GITHUB_API_USERNAME')]) {
     	def commitId = powershell(returnStdout: true, script: "git rev-parse HEAD").trim()
-        def payload = JsonOutput.toJson(["state": "${state}", "target_url": "${targetUrl}", "description": "${description}"])
-        def apiUrl = "https://api.github.com/repos/${getRepoSlug()}/statuses/${commitId}"
-        def response = powershell(returnStdout: true, script: "curl -H \"Authorization: Token ${env.GitHub_Token}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
+      def payload = JsonOutput.toJson(["state": "${state}", "target_url": "${targetUrl}", "description": "${description}"])
+      def apiUrl = "https://api.github.com/repos/${getRepoSlug()}/statuses/${commitId}"
+      def sdToken = powershell(returnStdout:true, script: "[System.Convert]::ToBase64String([System.Text.Encoding]::Ascii.GetBytes(${GITHUB_API_USERNAME}:${GITHUB_API_PASSWORD}))")
+      def response = powershell(returnStdout: true, script: "Invoke-Webrequest -URI ${apiUrl} -Headers @{"Authorization"="Basic ${sdToken}"} -ContentType 'application/json' -Method 'POST' -Body ${payload} ").trim()
     }
 }
 
