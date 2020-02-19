@@ -12,9 +12,9 @@ node {
             target_url: targetUrl
     )
     
-    script {
-    	powershell label: 'RepoStatus', returnStdout: true, script: ''' echo "$payload" '''
-    }
+
+    	powershell label: 'RepoStatus', returnStdout: true, script: """ echo $payload """ 
+
     
  //    powershell label: 'RepoStatus', returnStdout: true, script: '''
  //    	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -36,9 +36,6 @@ node {
     // '''
     // pom = readMavenPom file: 'pom.xml'
 
-    script {
-    	powershell(returnStdout: true, script: 'Write-Output "$sdUri"')
-    }
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'GitLab_Pass',
                       usernameVariable: 'GITHUB_API_USERNAME', passwordVariable: 'GITHUB_API_PASSWORD']]) {
