@@ -36,7 +36,7 @@ node {
 
     withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'GitLab_Pass',
                       usernameVariable: 'GITHUB_API_USERNAME', passwordVariable: 'GITHUB_API_PASSWORD']]) {
-      gitHubApiToken = env.GITHUB_API_PASSWORD
+      gitHubApiToken = env.GitHub_Token
     }
   }
 
