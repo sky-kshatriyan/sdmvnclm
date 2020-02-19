@@ -1,7 +1,7 @@
 import groovy.json.JsonOutput
 
 node {
-  def commitId, commitDate, pom, version, sdToken, sdIRMParams
+  def commitId, commitDate, pom, version
   def gitHubApiToken
 
   def postGitHub = { state, context, description, targetUrl = null ->
