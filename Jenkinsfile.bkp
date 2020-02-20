@@ -4,15 +4,6 @@ node {
   def commitId, commitDate, pom, version
   def gitHubApiToken
 
-void setDeploymentStatus(deploymentId, state, targetUrl, description) {
-    withCredentials([[$class: 'StringBinding', credentialsId: 'GITHUB_TOKEN', variable: 'GITHUB_TOKEN']]) {
-        def payload = JsonOutput.toJson(["state": "${state}", "target_url": "${targetUrl}", "description": "${description}"])
-        def apiUrl = "https://octodemo.com/api/v3/repos/${getRepoSlug()}/deployments/${deploymentId}/statuses"
-        def response = sh(returnStdout: true, script: "curl -s -H \"Authorization: Token ${env.GITHUB_TOKEN}\" -H \"Accept: application/json\" -H \"Content-type: application/json\" -X POST -d '${payload}' ${apiUrl}").trim()
-    }
-}
-
-
   def postGitHub = { state, context, description, targetUrl = null ->
     def payload = JsonOutput.toJson(
             state: state,
