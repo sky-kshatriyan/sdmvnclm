@@ -6,6 +6,10 @@ node {
     	checkout scm
 	}
 	stage('Build') {
-		bat label: 'AEM_Prj', script: 'mvn clean'
+		if (isUnix()) {
+			sh label: 'AEM_Prj', script: 'mvn clean'
+		}else {
+			bat label: 'AEM_Prj', script: 'mvn clean'
+		}
 	}
 }
