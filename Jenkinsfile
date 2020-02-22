@@ -2,5 +2,7 @@
 // Testing PR from MBPLJ
 
 node {
-	checkout scm
+	stage('pre-build') {
+    	checkout scm
+	}
 }
