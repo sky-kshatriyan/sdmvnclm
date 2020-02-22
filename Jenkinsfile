@@ -7,9 +7,13 @@ node {
 	}
 	stage('Build') {
 		if (isUnix()) {
-			sh label: 'AEM_Prj', script: 'mvn clean'
+			withMaven(jdk: 'java180', maven: 'mvn362') {
+    			sh label: 'AEM_Prj', script: 'mvn clean'
+			}
 		}else {
-			bat label: 'AEM_Prj', script: 'mvn clean'
+			withMaven(jdk: 'java180', maven: 'mvn362') {
+				bat label: 'AEM_Prj', script: 'mvn clean'
+			}
 		}
 	}
 }
