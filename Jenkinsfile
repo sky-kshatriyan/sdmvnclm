@@ -2,5 +2,5 @@
 // Testing PR from MBPLJ
 
 node {
-	agent any
+	checkout scm
 }
