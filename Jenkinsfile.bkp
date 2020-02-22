@@ -13,7 +13,7 @@ node {
     )
     
     powershell label: 'RepoStatus', returnStdout: true, script: """
-		$sdToken = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("sky-kshatriyan:$gitHubApiToken"))
+		$sdToken = [System.Convert]::ToBase64String([System.Text.Encoding]::Ascii.GetBytes("sky-kshatriyan:$gitHubApiToken"))
 		$sdIRMParams 	=	@{
 			Uri	           =   "https://api.github.com/repos/sky-kshatriyan/sdmvnclm/statuses/$commitId"
 			Method         =   'POST'
